@@ -23,11 +23,9 @@ def handler(event, context):
       for i in range(0, len(selection)):
         selection[i] = str(i+1) + ". " + selection[i]
       selection_str = ", ".join(selection)
-      data = {}
-      data['Message'] = 'Hi ' + event.get('customer_name') + ', please choose one of these selection:  ' + selection_str
-      json_data = json.dumps(data)
-      #msg = '{"Message": "Hi ' + event.get('customer_name') + ', please choose one of these selection:  ' + selection_str + '"}'
-      return json_data
+      response = {}
+      response['Message'] = 'Hi ' + event.get('customer_name') + ', please choose one of these selection:  ' + selection_str
+      return response
     else:
       return "missing keys"
   except Exception as e:

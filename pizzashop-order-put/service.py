@@ -17,8 +17,12 @@ def handler(event, context):
       return e.message
 
     item = order_table.get_item(Key={'order_id': event['order_id']}).get('Item')
+    if item == None:
+      response['Message'] = 'This order does not exist'
+      return response
     #Get the customer's order
     order = item.get('order')
+    
     menu_id = item.get('menu_id')
     #Get the customer's selection from the order
     if order.get('selection') == 'empty':
@@ -39,15 +43,15 @@ def handler(event, context):
       response['Message'] = 'Your order costs $' + cost + '. We will email you when the order is ready. Thank you!'
       order['order_time'] = time.strftime("%m-%d-%Y@%H:%M:%S")
     else:
-      return 
+      response['Message'] = 'Your order has already been placed. We will email you when the order is ready. Thank you!'
+      return response
+
     order_table.update_item(
       Key={'order_id': event['order_id']},
       UpdateExpression="SET #order = :ss",
       ExpressionAttributeNames={'#order': 'order'},
       ExpressionAttributeValues={':ss': order}
     )
-    #response['statusCode'] = 200
-    #return json.dumps(response)
     return response
     
   else:
