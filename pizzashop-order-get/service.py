@@ -13,6 +13,9 @@ def handler(event, context):
       return e.message
 
     item = order_table.get_item(Key={'order_id': event['order_id']}).get('Item')
+    if item == None:
+      response = {}
+      return response
     return item
   else:
     return "missing key: order_id"
