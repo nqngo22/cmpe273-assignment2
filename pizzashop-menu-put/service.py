@@ -8,6 +8,9 @@ def handler(event, context):
     table.update_item(
       Key={'menu_id': event['menu_id']},
       UpdateExpression="SET selection = :a",
-      ExpressionAttributeValues={':a': event['selection']})
+      ExpressionAttributeValues={':a': event['selection']}
+      )
+    response = {}
+    return response
   except Exception as e:
     return e.message
