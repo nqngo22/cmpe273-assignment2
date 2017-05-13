@@ -8,6 +8,9 @@ def handler(event, context):
     order_table = boto3.resource('dynamodb', region_name='us-west-1').Table('order')
     keys = {'menu_id', 'order_id', 'customer_name', 'customer_email'}
     if all(key in event for key in keys):
+      menu_table = boto3.resource('dynamodb', region_name='us-west-1').Table('menu')
+      selection = menu_table.get_item(Key={'menu_id': event['menu_id']}).get('Item').get('selection')
+
       event['order_status'] = 'processing'
 
       order = {}
@@ -18,8 +21,6 @@ def handler(event, context):
       event['order'] = order
 
       order_table.put_item(Item=event)
-      menu_table = boto3.resource('dynamodb', region_name='us-west-1').Table('menu')
-      selection = menu_table.get_item(Key={'menu_id': event['menu_id']}).get('Item').get('selection')
       for i in range(0, len(selection)):
         selection[i] = str(i+1) + ". " + selection[i]
       selection_str = ", ".join(selection)
